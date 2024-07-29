@@ -8,10 +8,10 @@ from keyboards.reply_keyboard import main_kb
 from db_hadlers.db_class import DatabaseBot
 #from keyboards.inline_keyboards import base_link_kb
 
-user_routetr = Router()
+user_router = Router()
 
 
-@user_routetr.message(CommandStart())
+@user_router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext):
     state.clear()
     
@@ -26,7 +26,7 @@ async def cmd_start(message: Message, state: FSMContext):
     await message.answer(f'Ось головне меню!', reply_markup=main_kb(message.from_user.id))
     
 
-@user_routetr.message(F.text == '❓ Про нас')
+@user_router.message(F.text == '❓ Про нас')
 async def cmd_about_us(message: Message):
     await message.answer(f'Бот створений для спостереженям за цінами в різних онлайн магазинах')
     await message.answer(f'Бот поки що знаходиться в стадії розробки, якщо ви знайшли якись баг повідомте мене про це будь ласка'
