@@ -2,6 +2,7 @@ import asyncio
 from aiogram.types import BotCommand, BotCommandScopeDefault
 from create_bot import bot, dp, scheduler
 from handlers.user_handler import user_router
+from handlers.set_url_product import spu_router
 #from handlers.admin_handler import admin_rt
 #from handlers.special_pers_hd import spec_pers
 from create_bot import admins, tg_db
@@ -46,7 +47,7 @@ async def main():
     # scheduler.start()
     
     # dp.include_router(spec_pers)
-    # dp.include_router(admin_rt)
+    dp.include_router(spu_router)
     dp.include_router(user_router)
     
     dp.startup.register(start_bot)
