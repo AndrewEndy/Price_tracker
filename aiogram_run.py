@@ -3,6 +3,7 @@ from aiogram.types import BotCommand, BotCommandScopeDefault
 from create_bot import bot, dp, scheduler
 from handlers.user_handler import user_router
 from handlers.set_url_product import spu_router
+from handlers.rozetka_handler import rozetka_router
 #from handlers.admin_handler import admin_rt
 #from handlers.special_pers_hd import spec_pers
 from create_bot import admins, tg_db
@@ -46,7 +47,7 @@ async def main():
     # scheduler.add_job(send_message_time, 'interval', seconds=7200, next_run_time=datetime.now(), args=(bot,))
     # scheduler.start()
     
-    # dp.include_router(spec_pers)
+    dp.include_router(rozetka_router)
     dp.include_router(spu_router)
     dp.include_router(user_router)
     
