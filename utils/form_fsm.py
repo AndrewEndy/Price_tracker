@@ -4,6 +4,8 @@ from aiogram.fsm.state import State, StatesGroup
 
 class Form_rozetka(StatesGroup):
     url = State()
+    check = State()
+    set_name = State()
 
 class Form_prom(StatesGroup):
     url = State()
