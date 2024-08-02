@@ -32,9 +32,12 @@ class DatabaseBot:
                 telegram_id INTEGER NOT NULL,
                 url TEXT NOT NULL,
                 name TEXT NOT NULL,
+                store_name TEXT,
                 price REAL,
                 min_price REAL,
-                max_price REAL
+                max_price REAL,
+                state TEXT,
+                currency TEXT
             )''')
         
         await self.db.commit()
@@ -61,5 +64,34 @@ class DatabaseBot:
             async with self.db.execute("SELECT * FROM Products WHERE telegram_id = ?", (telegram_id,)) as cursor:
                 products = await cursor.fetchall()
                 return products
+        
+    
+    async def set_product(self, telegram_id: int, url: str ,name: str, store_name: str, price: float, max_price: float, currency: str, state: str):
+        '''Метод для встановлення даних про товар'''
+        async with self.lock:
+            await self.db.execute('''
+                INSERT INTO Products (telegram_id, url, name, store_name, price, min_price, max_price, currency, state) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (telegram_id, url, name, store_name, price, price, max_price, currency, state))  # Вставка з однаковим значенням для price і min_price
+            await self.db.commit()
 
 
+    async def update_product_name(self, telegram_id: int, old_name: str, new_name: str):
+        '''Метод для зміни назви товара'''
+        async with self.lock:
+            await self.db.execute('''
+                UPDATE Products 
+                SET name = ?
+                WHERE name == ? AND telegram_id == ?
+            ''', (new_name, old_name, telegram_id))
+            await self.db.commit()
+        
+        
+    async def check_similar_url(self, telegram_id: int ,url: str):
+        '''Метод перевіряє чи є вже такий товар в користувача'''
+        async with self.lock:
+            async with self.db.execute("SELECT * FROM Products WHERE telegram_id == ? AND url == ?", (telegram_id, url)) as cursor:
+                products = await cursor.fetchall()
+                if products:
+                    return True
+                return False
