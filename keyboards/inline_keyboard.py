@@ -14,3 +14,8 @@ def inline_kb_store():
 def back_inline_kb():
     '''Inline клавіатура з кнопкою яка переносить в головне меню'''
     return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='«На головну', callback_data='back_home')]])
+
+def check_name_product():
+    '''Inline клавіатура для перевірки чи підходить назва товара'''
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='OK', callback_data='good')
+                                                  ,InlineKeyboardButton(text='Змінити назву', callback_data='change_name')]])
