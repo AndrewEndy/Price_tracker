@@ -19,3 +19,45 @@ def check_name_product():
     '''Inline клавіатура для перевірки чи підходить назва товара'''
     return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='OK', callback_data='good')
                                                   ,InlineKeyboardButton(text='Змінити назву', callback_data='change_name')]])
+
+
+def show_all_my_products(products: list) -> InlineKeyboardBuilder:
+    '''Inline клавіатура з усіма товарами користувача'''
+    
+    builder = InlineKeyboardBuilder()
+    
+    for tupl in products:
+        builder.row(
+            InlineKeyboardButton(
+                text=tupl[3],
+                callback_data=f'product_{tupl[0]}'
+            )
+        )
+        
+    # Додаєм кнопку "Переглянути всі" 
+    builder.row(
+        InlineKeyboardButton(
+            text='Переглянути всі',
+            callback_data='show_all_products'
+        )
+    )
+        
+    # Додаєм кнопку "На головну"
+    builder.row(
+        InlineKeyboardButton(
+            text='На головну',
+            callback_data='back_home'
+        )
+    )
+    # Настраиваем размер клавиатуры
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+def button_displaying_product() -> InlineKeyboardMarkup:
+    '''Inline клавіатура для кнопок при показі товара'''
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Оновити статус', callback_data='update_status')],
+                                                  [InlineKeyboardButton(text='Змінити назву', callback_data='change_name')],
+                                                  [InlineKeyboardButton(text='На головну', callback_data='back_home')],
+                                                  [InlineKeyboardButton(text='Назад', callback_data='back_page')]
+                                                  ])
