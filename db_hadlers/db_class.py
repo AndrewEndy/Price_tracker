@@ -63,6 +63,14 @@ class DatabaseBot:
         async with self.lock:
             async with self.db.execute("SELECT * FROM Products WHERE telegram_id = ?", (telegram_id,)) as cursor:
                 products = await cursor.fetchall()
+                return products # [(id, tg_id, URL, name, store_name, price, min_price, max_price, state, currency)]
+    
+    
+    async def get_product_by_product_id(self, product_id: int, telegram_id: int):
+        '''Метод для отримання товара по id'''
+        async with self.lock:
+            async with self.db.execute("SELECT * FROM Products WHERE telegram_id = ? AND id = ?", (telegram_id, product_id)) as cursor:
+                products = await cursor.fetchall()
                 return products
         
     
