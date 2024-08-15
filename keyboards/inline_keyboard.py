@@ -45,7 +45,7 @@ def show_all_my_products(products: list) -> InlineKeyboardBuilder:
     # Додаєм кнопку "На головну"
     builder.row(
         InlineKeyboardButton(
-            text='На головну',
+            text='Назад',
             callback_data='back_home'
         )
     )
@@ -54,10 +54,17 @@ def show_all_my_products(products: list) -> InlineKeyboardBuilder:
     return builder.as_markup()
 
 
-def button_displaying_product() -> InlineKeyboardMarkup:
+def button_displaying_product(product_id: int) -> InlineKeyboardMarkup:
     '''Inline клавіатура для кнопок при показі товара'''
-    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Оновити статус', callback_data='update_status')],
-                                                  [InlineKeyboardButton(text='Змінити назву', callback_data='change_name')],
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Оновити дані', callback_data=f'update_status_{product_id}')],
+                                                  [InlineKeyboardButton(text='Змінити назву', callback_data=f'change_name_{product_id}')],
                                                   [InlineKeyboardButton(text='На головну', callback_data='back_home')],
-                                                  [InlineKeyboardButton(text='Назад', callback_data='back_page')]
+                                                  [InlineKeyboardButton(text='Назад', callback_data='show_my_products')]
+                                                  ])
+
+
+def back_buttons() -> InlineKeyboardMarkup:
+    '''Inline клавіатура з кнопками на головну і назад'''
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='На головну', callback_data='back_home')],
+                                                  [InlineKeyboardButton(text='Назад', callback_data='show_my_products')]
                                                   ])
