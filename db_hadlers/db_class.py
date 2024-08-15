@@ -70,8 +70,8 @@ class DatabaseBot:
         '''Метод для отримання товара по id'''
         async with self.lock:
             async with self.db.execute("SELECT * FROM Products WHERE telegram_id = ? AND id = ?", (telegram_id, product_id)) as cursor:
-                products = await cursor.fetchall()
-                return products
+                products = await cursor.fetchall() 
+                return products # [(id, tg_id, URL, name, store_name, price, min_price, max_price, state, currency)]
         
     
     async def set_product(self, telegram_id: int, url: str ,name: str, store_name: str, price: float, max_price: float, currency: str, state: str):
@@ -84,8 +84,8 @@ class DatabaseBot:
             await self.db.commit()
 
 
-    async def update_product_name(self, telegram_id: int, old_name: str, new_name: str):
-        '''Метод для зміни назви товара'''
+    async def update_product_name_by_old_name(self, telegram_id: int, old_name: str, new_name: str):
+        '''Метод для зміни назви товара по старій назві'''
         async with self.lock:
             await self.db.execute('''
                 UPDATE Products 
@@ -95,11 +95,67 @@ class DatabaseBot:
             await self.db.commit()
         
         
+    async def update_product_name_by_product_id(self, product_id: int, new_name: str):
+        '''Метод для зміни назви товара по product_id'''
+        async with self.lock:
+            await self.db.execute('''
+                UPDATE Products 
+                SET name = ?
+                WHERE id = ?
+            ''', (new_name, product_id))
+            await self.db.commit()
+        
+    
+    async def update_price_state_currency_by_product_id(self, price: float, state: str, currency: str, product_id: int):
+        '''Метод який змінює поточну ціну, статус, валюту '''
+        async with self.lock:
+            await self.db.execute('''
+                UPDATE Products 
+                SET price = ?,
+                state = ?,
+                currency = ?
+                WHERE id = ?
+            ''', (price, state, currency, product_id))
+            await self.db.commit()
+        
+    
+    async def update_min_price_by_product_id(self, min_price: float, product_id: int):
+        '''Метод який змінює мінімальну ціну '''
+        async with self.lock:
+            await self.db.execute('''
+                UPDATE Products 
+                SET min_price = ?
+                WHERE id = ?
+            ''', (min_price, product_id))
+            await self.db.commit()
+        
+    
+    async def update_max_price_by_product_id(self, max_price: float, product_id: int):
+        '''Метод який змінює максимальну ціну '''
+        async with self.lock:
+            await self.db.execute('''
+                UPDATE Products 
+                SET max_price = ?
+                WHERE id = ?
+            ''', (max_price, product_id))
+            await self.db.commit()
+        
+        
     async def check_similar_url(self, telegram_id: int ,url: str):
         '''Метод перевіряє чи є вже такий товар в користувача'''
         async with self.lock:
             async with self.db.execute("SELECT * FROM Products WHERE telegram_id == ? AND url == ?", (telegram_id, url)) as cursor:
                 products = await cursor.fetchall()
                 if products:
+                    return True
+                return False
+    
+    
+    async def check_similar_name(self, telegram_id: int, name: str):
+        '''Метод який перевіряє чи вже є така назва товару у користувача'''
+        async with self.lock:
+            async with self.db.execute("SELECT name FROM Products WHERE telegram_id == ? AND name == ?", (telegram_id, name)) as cursor:
+                name = await cursor.fetchall()
+                if name:
                     return True
                 return False
