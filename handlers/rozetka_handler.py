@@ -109,14 +109,21 @@ async def foo(message: Message, state: FSMContext):
 async def set_new_name(message: Message, state: FSMContext):
     '''Хендлер який змінює назву товару в БД'''
     
+    async with DatabaseBot(tg_db) as database:
+        flag = await database.check_similar_name(message.from_user.id, message.text)
+    
     if len(message.text) > 40: # Якщо назва занадто довга, просить ввести коротшу назву 
         await message.answer(f'Назва завелика!\nБудь ласка введіть іншу')
+        await state.set_state(Form_rozetka.set_name)
+    
+    if flag:
+        await message.answer(f'Така навзва уже є!', reply_markup=back_inline_kb())
         await state.set_state(Form_rozetka.set_name)
         
     else: # Інкаше змінює назву в БД і перекидає в головне меню
         async with DatabaseBot(tg_db) as database:
-            await database.update_product_name(message.from_user.id ,temp_name, message.text)
-        print(temp_name)
+            await database.update_product_name_by_old_name(message.from_user.id ,temp_name, message.text)
+        #print(temp_name)
         await state.clear()
         await message.answer(f'Товар додано!', reply_markup=main_kb(message.from_user.id))
 
