@@ -1,6 +1,10 @@
 from aiogram.fsm.state import State, StatesGroup
 
-# Класи для FSM стану різних магазинів, щоб коректно опрацювати URL кожного магазина
+# Класи для FSM стану 
+
+class Change_name_form(StatesGroup):
+    change_name = State()
+
 
 class Form_rozetka(StatesGroup):
     url = State()
