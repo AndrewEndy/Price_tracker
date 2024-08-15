@@ -1,11 +1,12 @@
 import asyncio
 from aiogram.types import BotCommand, BotCommandScopeDefault
 from create_bot import bot, dp, scheduler
+
 from handlers.user_handler import user_router
 from handlers.set_url_product import spu_router
 from handlers.rozetka_handler import rozetka_router
-#from handlers.admin_handler import admin_rt
-#from handlers.special_pers_hd import spec_pers
+from handlers.view_products_handler import view_router
+
 from create_bot import admins, tg_db
 from db_hadlers.db_class import DatabaseBot
 #from work_time.send_message import send_message_time
@@ -50,6 +51,7 @@ async def main():
     dp.include_router(rozetka_router)
     dp.include_router(spu_router)
     dp.include_router(user_router)
+    dp.include_router(view_router)
     
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
