@@ -9,10 +9,12 @@ async def get_product_data_from_rozetka(url):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
         'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
     }
-    
-    async with aiohttp.ClientSession(headers=headers) as session:
-            async with session.get(url) as response:
-                html = await response.text()  # Отримуємо текст відповіді
+    try:
+        async with aiohttp.ClientSession(headers=headers) as session:
+                async with session.get(url) as response:
+                    html = await response.text()  # Отримуємо текст відповіді
+    except:
+        return None
                 
     soup = BeautifulSoup(html, "html.parser")  # Використовуємо html.parser
 
